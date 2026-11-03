@@ -23,7 +23,9 @@ public class MascotaService {
     public Optional<Mascota> obtenerPorId(Long id) {
         return repo.findById(id);
     }
-
+    public List<Mascota> obtenerPorClienteId(Long clienteId) {
+        return repo.findByClienteId(clienteId);
+    }
     public Mascota guardar(Mascota mascota) {
         return repo.save(mascota);
     }

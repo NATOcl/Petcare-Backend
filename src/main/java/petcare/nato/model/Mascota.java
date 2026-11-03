@@ -59,5 +59,5 @@ public class Mascota {
     public String getNumeroMicrochip() { return numeroMicrochip; }
     public void setNumeroMicrochip(String numeroMicrochip) { this.numeroMicrochip = numeroMicrochip; }
     public Cliente getCliente() { return cliente; }
-    public void setPropietario(Cliente cliente) { this.cliente = cliente; }
+    public void setCliente(Cliente cliente) { this.cliente = cliente; }
 }
