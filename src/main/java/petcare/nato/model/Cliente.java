@@ -1,6 +1,5 @@
 package petcare.nato.model;
 
-
 import jakarta.persistence.*;
 
 @Entity
