@@ -1,5 +1,4 @@
 package petcare.nato.security;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -13,8 +12,9 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    private static final String SECRET_KEY = "Petcare";
-    private static final long EXPIRATION_TIME = 86400000; 
+    // Clave de más de 32 caracteres (256 bits) para cumplir el estándar HMAC-SHA256
+    private static final String SECRET_KEY = "MiClaveSecretaSuperSeguraConMasDe32CaracteresParaJWTPetcare2026!";
+    private static final long EXPIRATION_TIME = 86400000; // 24 horas
 
     private final Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
 
@@ -44,6 +44,7 @@ public class JwtService {
         return extractClaim(token, Claims::getExpiration);
     }
 
+    @SuppressWarnings("null")
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
