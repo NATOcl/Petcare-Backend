@@ -26,17 +26,15 @@ public class RegisterRequest {
     @Size(min = 6, max = 72, message = "La contraseña debe tener al menos 6 caracteres")
     private String password;
 
-    private String rol;
-
     public RegisterRequest() {
     }
 
-    public RegisterRequest(String nombre, String rut, String email, String password, String rol) {
+    public RegisterRequest(String nombre, String rut, String email, String password) {
         this.nombre = nombre;
         this.rut = rut;
         this.email = email;
         this.password = password;
-        this.rol = rol;
+        
     }
 
     public String getNombre() { return nombre; }
@@ -47,6 +45,5 @@ public class RegisterRequest {
     public void setEmail(String email) { this.email = email; }
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
-    public String getRol() { return rol; }
-    public void setRol(String rol) { this.rol = rol; }
+
 }

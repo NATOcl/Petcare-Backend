@@ -32,13 +32,12 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("El correo ya está registrado");
         }
 
-        String rolDefecto = (req.getRol() != null && !req.getRol().isBlank()) ? req.getRol() : "USER";
-
         Usuario u = new Usuario();
         u.setEmail(req.getEmail());
         u.setPassword(passwordEncoder.encode(req.getPassword()));
-        u.setRol(rolDefecto);
-
+       
+        u.setRol("CLIENTE");
+        
         repo.save(u);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
