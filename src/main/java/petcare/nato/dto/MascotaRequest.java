@@ -6,18 +6,19 @@ import java.time.LocalDate;
 
 public class MascotaRequest {
 
-    @NotBlank(message = "El nombre es obligatorio")
+    @NotBlank(message = "El nombre de la mascota es obligatorio")
     private String nombre;
 
     @NotBlank(message = "La especie es obligatoria")
     private String especie;
 
+    @NotBlank(message = "La raza es obligatoria (puede ser 'Mestizo')")
     private String raza;
     private LocalDate fechaNacimiento;
     private Double peso;
     private String numeroMicrochip;
 
-    @NotNull(message = "El ID del cliente es obligatorio")
+    @NotNull(message = "El ID del cliente(dueño) es obligatorio")
     private Long clienteId;
 
     public MascotaRequest() {

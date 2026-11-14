@@ -25,6 +25,9 @@ public class CitaService {
     }
 
     public Cita guardar(Cita cita) {
+        if (cita.getId() == null) {
+            cita.setEstado("PENDIENTE");
+        }
         return repo.save(cita);
     }
 

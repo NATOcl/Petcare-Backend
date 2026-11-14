@@ -18,10 +18,11 @@ public class ClienteRequest {
     @Pattern(regexp = "^[0-9]{7,8}[0-9kK]$", message = "Formato de RUT inválido")
     private String rut;
 
-    // El teléfono es opcional enle frontend
+    // El teléfono es opcional en el frontend
     private String telefono;
 
-    @Email(message = "Debe ser un email válido")
+    @NotBlank(message = "El email es obligatorio")
+    @Email(message = "Debe tener un formato de correo válido")
     private String email;
 
     private String direccion;
