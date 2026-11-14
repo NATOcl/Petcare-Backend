@@ -31,31 +31,46 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
 
         final String authHeader = request.getHeader("Authorization");
-        final String jwt;
-        final String userEmail;
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        jwt = authHeader.substring(7);
-        userEmail = jwtService.extractUsername(jwt);
+        final String jwt = authHeader.substring(7);
 
-        if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+        try {
+            final String userEmail = jwtService.extractUsername(jwt);
 
-            if (jwtService.isTokenValid(jwt, userDetails.getUsername())) {
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities()
-                );
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+            if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+
+                if (jwtService.isTokenValid(jwt, userDetails.getUsername())) {
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                            userDetails,
+                            null,
+                            userDetails.getAuthorities()
+                    );
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                } else {
+                    enviarError401(response, "Token inválido o vencido");
+                    return;
+                }
             }
+        } catch (Exception e) {
+            // Se ejecuta automáticamente cuando JJWT detecta un token expirado o alterado
+            enviarError401(response, "Token inválido o vencido");
+            return;
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private void enviarError401(HttpServletResponse response, String mensaje) throws IOException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write("{\"error\": \"" + mensaje + "\"}");
     }
 }

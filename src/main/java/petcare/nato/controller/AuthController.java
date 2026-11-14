@@ -47,9 +47,30 @@ public class AuthController {
         return repo.findByEmail(req.getEmail())
                 .filter(u -> passwordEncoder.matches(req.getPassword(), u.getPassword()))
                 .map(u -> {
-                    String token = jwtService.generateToken(u.getEmail());
+                    String token = jwtService.generateToken(u.getEmail(), u.getRol()); // pasa email y rol para que quede dentro del token
                     return ResponseEntity.ok(new AuthResponse(token, u.getEmail(), u.getRol()));
                 })
                 .orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refresh(@RequestHeader(value = "Authorization", required = false) String authHeader) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token no proporcionado");
+        }
+
+        try {
+            String oldToken = authHeader.substring(7);
+            String email = jwtService.extractEmail(oldToken);
+
+            return repo.findByEmail(email)
+                    .map(u -> {
+                        String newToken = jwtService.generateToken(u.getEmail(), u.getRol());
+                        return ResponseEntity.ok(new AuthResponse(newToken, u.getEmail(), u.getRol()));
+                    })
+                    .orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Token inválido o expirado");
+        }
     }
 }
