@@ -38,14 +38,17 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // API sin cookies de sesión: CSRF no aplica
+                .csrf(csrf -> csrf.disable()) 
                 .cors(Customizer.withDefaults())
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**", "/h2-console/**", "/error").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/clientes").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/servicios/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/veterinarios/**").permitAll()
+                        .requestMatchers("/api/v1/auth/**", "/h2-console/**", "/error").permitAll()
+                        // Rutas públicas de Swagger UI y OpenAPI
+                        .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
+                        // Endpoints públicos 
+                        .requestMatchers(HttpMethod.POST, "/api/v1/clientes").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/servicios/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/veterinarios/**").permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling(e -> e.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
                 .headers(h -> h.frameOptions(f -> f.sameOrigin())) // necesario para la consola H2
