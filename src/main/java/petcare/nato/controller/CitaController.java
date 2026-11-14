@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/citas")
+@RequestMapping("/api/v1/citas")
 public class CitaController {
 
     private final CitaRepository repo;
