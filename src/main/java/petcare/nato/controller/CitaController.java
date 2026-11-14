@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
+import petcare.nato.service.CitaService;
 import java.util.List;
 
 @RestController
@@ -15,26 +15,28 @@ import java.util.List;
 public class CitaController {
 
     private final CitaRepository repo;
+    private final CitaService service;
 
-    public CitaController(CitaRepository repo) {
+    public CitaController(CitaRepository repo, CitaService service) {
         this.repo = repo;
+        this.service = service;
     }
 
     @GetMapping
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CLIENTE', 'VENDEDOR')")
     public List<Cita> listar() {
         return repo.findAll();
     }
     
     @PostMapping
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CLIENTE', 'VENDEDOR')")
     public ResponseEntity<Cita> crear(@Valid @RequestBody Cita req) {
-        Cita c = repo.save(req);
+        Cita c = service.guardar(req);
         return ResponseEntity.status(HttpStatus.CREATED).body(c);
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CLIENTE', 'VENDEDOR')")
     public ResponseEntity<Cita> actualizar(@PathVariable Long id, @Valid @RequestBody Cita req) {
         return repo.findById(id)
                 .map(c -> {
@@ -49,7 +51,7 @@ public class CitaController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAnyRole('ADMIN', 'CLIENTE', 'VENDEDOR')")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         if (!repo.existsById(id)) {
             return ResponseEntity.notFound().build();

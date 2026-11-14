@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -21,10 +20,17 @@ public class ServicioController {
     }
     
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'VENDEDOR', 'CLIENTE')")
     public List<Servicio> listar() {
         return repo.findAll();
     }
-
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'VENDEDOR', 'CLIENTE')")
+    public ResponseEntity<Servicio> obtenerPorId(@PathVariable Long id) { 
+        return repo.findById(id)
+            .map(servicio -> ResponseEntity.ok(servicio))
+            .orElse(ResponseEntity.notFound().build());
+     }
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Servicio> crear(@Valid @RequestBody Servicio req) {

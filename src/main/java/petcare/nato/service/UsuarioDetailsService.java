@@ -2,13 +2,16 @@ package petcare.nato.service;
 
 import petcare.nato.model.Usuario;
 import petcare.nato.repository.UsuarioRepository;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-/** Le dice a Spring Security cómo cargar un usuario por su "username" (aquí, el email). */
+import java.util.List;
+
 @Service
 public class UsuarioDetailsService implements UserDetailsService {
 
@@ -19,12 +22,22 @@ public class UsuarioDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) {
-        Usuario u = repo.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("No existe: " + email));
-        return User.withUsername(u.getEmail())
-                .password(u.getPassword())
-                .roles(u.getRol()) // agrega el prefijo ROLE_
-                .build();
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Usuario usuario = repo.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + email));
+
+        String rol = (usuario.getRol() != null && !usuario.getRol().isBlank())
+                ? usuario.getRol().trim().toUpperCase()
+                : "CLIENTE";
+
+        String rolConPrefijo = rol.startsWith("ROLE_") ? rol : "ROLE_" + rol;
+
+        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(rolConPrefijo));
+
+        return new User(
+                usuario.getEmail(),
+                usuario.getPassword(),
+                authorities
+        );
     }
 }

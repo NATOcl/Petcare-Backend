@@ -9,9 +9,10 @@ import petcare.nato.security.JwtService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
+import java.util.List;
 @RestController
 @RequestMapping("/api/v1/auth")
 public class AuthController {
@@ -42,6 +43,27 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @PostMapping("/register-role")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> registrarConRol(@Valid @RequestBody RegisterRequest req, @RequestParam String rol) {
+        if (repo.findByEmail(req.getEmail()).isPresent()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("El correo ya está registrado");
+        }
+
+        String rolUpper = rol.toUpperCase();
+        if (!List.of("ADMIN", "VENDEDOR", "CLIENTE").contains(rolUpper)) {
+            return ResponseEntity.badRequest().body("Rol inválido. Use: ADMIN, VENDEDOR o CLIENTE");
+        }
+
+        Usuario u = new Usuario();
+        u.setEmail(req.getEmail());
+        u.setPassword(passwordEncoder.encode(req.getPassword()));
+        u.setRol(rolUpper);
+
+        repo.save(u);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+    
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest req) {
         return repo.findByEmail(req.getEmail())
