@@ -20,12 +20,10 @@ public class ServicioController {
     }
     
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'VENDEDOR', 'CLIENTE')")
     public List<Servicio> listar() {
         return repo.findAll();
     }
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'VENDEDOR', 'CLIENTE')")
     public ResponseEntity<Servicio> obtenerPorId(@PathVariable Long id) { 
         return repo.findById(id)
             .map(servicio -> ResponseEntity.ok(servicio))
