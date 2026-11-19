@@ -26,7 +26,7 @@ public class DataSeeder {
                 Usuario user = new Usuario();
                 user.setEmail("user@duoc.cl");
                 user.setPassword(enc.encode("user123"));
-                user.setRol("USER");
+                user.setRol("CLIENTE");
                 usuarios.save(user);
             }
             if (servicios.count() == 0) {
