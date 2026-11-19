@@ -47,8 +47,8 @@ public class SecurityConfig {
                         .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
                         // Endpoints públicos 
                         .requestMatchers(HttpMethod.POST, "/api/v1/clientes").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/servicios/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/veterinarios/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/servicios", "/api/v1/servicios/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/veterinarios", "/api/v1/veterinarios/**").permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling(e -> e.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
                 .headers(h -> h.frameOptions(f -> f.sameOrigin())) // necesario para la consola H2

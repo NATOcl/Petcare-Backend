@@ -39,10 +39,10 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        // 1. Usuarios por defecto 
-        crearUsuarioSiNoExiste("admin@gmail.cl", "Admin123!", "ADMIN");
-        crearUsuarioSiNoExiste("vendedor@gmail.cl", "Vendedor123!", "VENDEDOR");
-        crearUsuarioSiNoExiste("cliente@gmail.cl", "Cliente123!", "CLIENTE");
+        // 1. Usuarios por defecto para cada perfil
+        crearUsuarioSiNoExiste("admin@gmail.com", "Admin123!", "ADMIN");
+        crearUsuarioSiNoExiste("vendedor@gmail.com", "Vendedor123!", "VENDEDOR");
+        crearUsuarioSiNoExiste("cliente@gmail.com", "Cliente123!", "CLIENTE");
 
         // 2. Ficha de Cliente vinculada al usuario + Mascota inicial
         if (clienteRepo.count() == 0) {
@@ -51,7 +51,7 @@ public class DataInitializer implements CommandLineRunner {
             cliente.setApellido("Soto");
             cliente.setRut("18.456.789-0");
             cliente.setTelefono("+56912345678");
-            cliente.setEmail("cliente@gmail.cl");
+            cliente.setEmail("cliente@gmail.com");
             cliente.setDireccion("Av. Macul 2450, Santiago");
             Cliente clienteGuardado = clienteRepo.save(cliente);
 
@@ -74,7 +74,7 @@ public class DataInitializer implements CommandLineRunner {
             vet.setNumeroMatricula("VET-9001");
             vet.setEspecialidad("Medicina General");
             vet.setTelefono("+56987654321");
-            vet.setEmail("m.rojas@gmail.cl");
+            vet.setEmail("m.rojas@gmail.com");
             veterinarioRepo.save(vet);
         }
 
