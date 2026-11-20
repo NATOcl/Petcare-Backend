@@ -9,7 +9,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class CorsConfig implements WebMvcConfigurer {
 
     
-    @Value("${app.cors.allowed-origin:https://natocl.github.io,http://localhost:5173}")
+    // Agregas la IP de tu instancia frontend a la lista de orígenes permitidos
+    @Value("${app.cors.allowed-origin:https://natocl.github.io,http://localhost:5173,http://50.16.134.149}")
     private String allowedOrigin;
 
     @Override
